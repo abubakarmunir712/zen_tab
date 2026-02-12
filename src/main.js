@@ -1,5 +1,6 @@
 import { createIcons } from 'lucide';
 import * as icons from 'lucide';
+import Sortable from 'sortablejs';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -56,6 +57,24 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSettings: document.getElementById('saveSettingsBtn'),
         focusModeBtn: document.getElementById('focusModeBtn')
     };
+
+    // --- Sortable Quick Links ---
+    new Sortable(el.linksGrid, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        filter: '.add-link-card', // Don't allow dragging the "Add" button
+        onEnd: () => {
+            const newLinks = [];
+            el.linksGrid.querySelectorAll('.link-item-wrapper').forEach(wrapper => {
+                const index = parseInt(wrapper.dataset.index);
+                newLinks.push(state.links[index]);
+            });
+            state.links = newLinks;
+            storage.set('links', state.links);
+            renderLinks(); // Re-render to update data-index attributes
+        }
+    });
+
 
     // --- Clock ---
     function updateClock() {
@@ -137,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         el.linksGrid.innerHTML = addCardHtml + state.links.map((link, i) => `
-            <div class="link-item-wrapper">
+            <div class="link-item-wrapper" data-index="${i}">
                 <a href="${link.url}" class="link-item">
                     <img src="https://www.google.com/s2/favicons?sz=64&domain=${link.url}" class="link-favicon">
                     <span>${link.title}</span>

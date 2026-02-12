@@ -327,6 +327,11 @@ body {
     font-weight: 500;
 }
 
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--primary) !important;
+}
+
 .link-item-wrapper {
     position: relative;
     width: 100%;
