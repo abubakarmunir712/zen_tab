@@ -219,7 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const index = parseInt(btn.getAttribute('data-index'));
-                state.links.splice(index, 1);
+                const currentLinks = storage.get('links', []);
+                currentLinks.splice(index, 1);
+                state.links = currentLinks;
                 storage.set('links', state.links);
                 renderLinks();
             });
@@ -266,17 +268,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const editIndex = el.confirmLinkBtn.dataset.editIndex;
 
         if (title && url) {
-            // Automatically prepend https:// if no protocol is present
             if (!/^https?:\/\//i.test(url)) {
                 url = 'https://' + url;
             }
 
+            // Always get the latest links from storage before modifying
+            const currentLinks = storage.get('links', []);
+
             if (editIndex !== undefined) {
-                state.links[editIndex] = { title, url };
+                currentLinks[editIndex] = { title, url };
             } else {
-                state.links.push({ title, url });
+                currentLinks.push({ title, url });
             }
 
+            state.links = currentLinks;
             storage.set('links', state.links);
             renderLinks();
             el.linkModal.classList.remove('show');
@@ -298,9 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', (e) => {
                 if (e.target.closest('.task-delete')) return;
                 const index = parseInt(item.getAttribute('data-index'));
-                state.tasks[index].done = !state.tasks[index].done;
-                storage.set('tasks', state.tasks);
-                renderTasks();
+                const currentTasks = storage.get('tasks', []);
+                if (currentTasks[index]) {
+                    currentTasks[index].done = !currentTasks[index].done;
+                    state.tasks = currentTasks;
+                    storage.set('tasks', state.tasks);
+                    renderTasks();
+                }
             });
         });
 
@@ -308,7 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const index = parseInt(btn.getAttribute('data-index'));
-                state.tasks.splice(index, 1);
+                const currentTasks = storage.get('tasks', []);
+                currentTasks.splice(index, 1);
+                state.tasks = currentTasks;
                 storage.set('tasks', state.tasks);
                 renderTasks();
             });
@@ -318,7 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addTaskBtn.onclick = () => {
         const text = el.taskInput.value;
         if (text) {
-            state.tasks.push({ text, done: false });
+            const currentTasks = storage.get('tasks', []);
+            currentTasks.push({ text, done: false });
+            state.tasks = currentTasks;
             el.taskInput.value = '';
             storage.set('tasks', state.tasks);
             renderTasks();
@@ -329,9 +342,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') el.addTaskBtn.click();
     });
 
+    // --- Sync Tabs ---
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'links') {
+            state.links = JSON.parse(e.newValue || '[]');
+            renderLinks();
+        }
+        if (e.key === 'tasks') {
+            state.tasks = JSON.parse(e.newValue || '[]');
+            renderTasks();
+        }
+        if (e.key === 'notes') {
+            state.notes = JSON.parse(e.newValue || '""');
+            el.notes.value = state.notes;
+        }
+        if (e.key === 'settings') {
+            state.settings = JSON.parse(e.newValue || '{}');
+            document.documentElement.style.setProperty('--bg-image', `url('${state.settings.bgUrl}')`);
+            updateClock();
+        }
+    });
+
     // --- Notes ---
     el.notes.value = state.notes;
-    el.notes.oninput = () => storage.set('notes', el.notes.value);
+    el.notes.oninput = () => {
+        state.notes = el.notes.value;
+        storage.set('notes', state.notes);
+    };
 
     // --- Settings & Focus ---
     el.focusModeBtn.onclick = () => {
@@ -359,12 +396,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const newShort = parseInt(document.getElementById('shortMinutes').value);
         const newLong = parseInt(document.getElementById('longMinutes').value);
 
-        if (newName) state.settings.userName = newName;
-        if (newBg) state.settings.bgUrl = newBg;
-        if (newFocus) state.settings.focus = newFocus;
-        if (newShort) state.settings.short = newShort;
-        if (newLong) state.settings.long = newLong;
+        // Fetch latest settings to avoid overwriting other tab changes
+        const currentSettings = storage.get('settings', state.settings);
 
+        if (newName) currentSettings.userName = newName;
+        if (newBg) currentSettings.bgUrl = newBg;
+        if (newFocus) currentSettings.focus = newFocus;
+        if (newShort) currentSettings.short = newShort;
+        if (newLong) currentSettings.long = newLong;
+
+        state.settings = currentSettings;
         storage.set('settings', state.settings);
         document.documentElement.style.setProperty('--bg-image', `url('${state.settings.bgUrl}')`);
         setMode('focus');
