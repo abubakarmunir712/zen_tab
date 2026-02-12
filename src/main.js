@@ -55,7 +55,60 @@ document.addEventListener('DOMContentLoaded', () => {
         notes: document.getElementById('notesArea'),
         settingsModal: document.getElementById('settingsModal'),
         saveSettings: document.getElementById('saveSettingsBtn'),
-        focusModeBtn: document.getElementById('focusModeBtn')
+        focusModeBtn: document.getElementById('focusModeBtn'),
+        calendarBtn: document.getElementById('calendarBtn'),
+        calendarModal: document.getElementById('calendarModal'),
+        closeCalendarBtn: document.getElementById('closeCalendarBtn'),
+        prevMonth: document.getElementById('prevMonth'),
+        nextMonth: document.getElementById('nextMonth'),
+        calendarTitle: document.getElementById('calendarTitle'),
+        calendarDays: document.getElementById('calendarDays')
+    };
+
+    // --- Calendar ---
+    let currentCalDate = new Date();
+
+    function renderCalendar() {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        
+        el.calendarTitle.innerText = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(currentCalDate);
+        
+        let daysHtml = '';
+        
+        // Padding for first week
+        for (let i = 0; i < firstDay; i++) {
+            daysHtml += '<div class="calendar-day empty"></div>';
+        }
+        
+        const today = new Date();
+        for (let i = 1; i <= lastDate; i++) {
+            const isToday = today.getDate() === i && today.getMonth() === month && today.getFullYear() === year;
+            daysHtml += `<div class="calendar-day ${isToday ? 'today' : ''}">${i}</div>`;
+        }
+        
+        el.calendarDays.innerHTML = daysHtml;
+    }
+
+    el.calendarBtn.onclick = () => {
+        currentCalDate = new Date();
+        renderCalendar();
+        el.calendarModal.classList.add('show');
+    };
+
+    el.closeCalendarBtn.onclick = () => el.calendarModal.classList.remove('show');
+    
+    el.prevMonth.onclick = () => {
+        currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+        renderCalendar();
+    };
+    
+    el.nextMonth.onclick = () => {
+        currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+        renderCalendar();
     };
 
     // --- Sortable Quick Links ---

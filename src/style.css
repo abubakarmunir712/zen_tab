@@ -640,6 +640,69 @@ body.focus-mode .widget-timer {
     color: white;
 }
 
+/* Calendar Modal */
+.calendar-modal {
+    width: 400px;
+    padding: 1.5rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.calendar-nav h2 {
+    font-size: 1.1rem;
+    min-width: 140px;
+    text-align: center;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    font-size: 0.9rem;
+    cursor: default;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.calendar-day:not(.empty):hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.calendar-day.today {
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+}
+
+.calendar-day.empty {
+    opacity: 0;
+}
+
+.calendar-day.other-month {
+    color: rgba(255, 255, 255, 0.2);
+}
+
 /* Modal */
 .modal-backdrop {
     position: fixed;

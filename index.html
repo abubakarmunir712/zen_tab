@@ -19,7 +19,9 @@
 
     <nav class="topbar">
         <div class="logo">
-            <i data-lucide="sparkles"></i> <span>ZenTab</span>
+            <button class="icon-btn" id="calendarBtn" title="View Calendar">
+                <i data-lucide="calendar"></i>
+            </button>
         </div>
         <div class="actions">
             <button class="icon-btn" id="focusModeBtn" title="Toggle Focus Mode">
@@ -32,6 +34,30 @@
     </nav>
 
     <main class="container">
+        <div class="modal-backdrop" id="calendarModal">
+            <div class="modal calendar-modal">
+                <div class="modal-header">
+                    <div class="calendar-nav">
+                        <button class="icon-btn" id="prevMonth"><i data-lucide="chevron-left"></i></button>
+                        <h2 id="calendarTitle">Month Year</h2>
+                        <button class="icon-btn" id="nextMonth"><i data-lucide="chevron-right"></i></button>
+                    </div>
+                    <button class="icon-btn" id="closeCalendarBtn"><i data-lucide="x"></i></button>
+                </div>
+                <div class="calendar-container">
+                    <div class="calendar-weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div class="calendar-days" id="calendarDays"></div>
+                </div>
+            </div>
+        </div>
         <section class="hero-section">
             <div id="greeting" class="greeting">Hello, Traveler</div>
             <div id="clock" class="clock">00:00</div>
