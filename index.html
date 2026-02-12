@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Tab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+
+    <div class="bg-overlay"></div>
+
+    <nav class="topbar">
+        <div class="logo">
+            <i data-lucide="sparkles"></i> <span>ZenTab</span>
+        </div>
+        <div class="actions">
+            <button class="icon-btn" id="focusModeBtn" title="Toggle Focus Mode">
+                <i data-lucide="eye-off"></i>
+            </button>
+            <button class="icon-btn" id="settingsBtn" title="Settings">
+                <i data-lucide="settings-2"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero-section">
+            <div id="greeting" class="greeting">Hello, Traveler</div>
+            <div id="clock" class="clock">00:00</div>
+            <div id="date" class="date">Loading...</div>
+
+            <form class="search-box" action="https://www.google.com/search" method="GET">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" name="q" placeholder="Search the web..." autocomplete="off">
+            </form>
+        </section>
+
+        <section class="bento-grid" id="widgetGrid">
+
+            <div class="card widget-links">
+                <div class="card-header">
+                    <h3><i data-lucide="link"></i> Quick Links</h3>
+                </div>
+                <div class="links-grid" id="linksGrid">
+                    <button class="add-link-card" id="addLinkBtn">
+                        <i data-lucide="plus"></i>
+                        <span>Add New</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card widget-timer">
+                <div class="card-header">
+                    <h3><i data-lucide="timer"></i> Focus</h3>
+                    <div class="badges">
+                        <span class="badge" id="modeBadge">Focus</span>
+                    </div>
+                </div>
+                <div class="timer-content">
+                    <div class="timer-display" id="timer">25:00</div>
+                    <div class="timer-controls">
+                        <button class="btn-control main-toggle" id="toggleTimerBtn" title="Start/Pause">
+                            <i data-lucide="play"></i>
+                        </button>
+                        <button class="btn-control secondary" id="resetBtn" title="Reset">
+                            <i data-lucide="rotate-ccw"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mode-selector">
+                    <button class="pill active" data-mode="focus">Focus</button>
+                    <button class="pill" data-mode="short">Short</button>
+                    <button class="pill" data-mode="long">Long</button>
+                </div>
+            </div>
+
+            <div class="card widget-tasks">
+                <div class="card-header">
+                    <h3><i data-lucide="check-circle-2"></i> Tasks</h3>
+                </div>
+                <div class="todo-input-group">
+                    <input type="text" id="taskInput" placeholder="Add a task...">
+                    <button id="addTaskBtn" class="icon-btn"><i data-lucide="plus"></i></button>
+                </div>
+                <ul class="todo-list" id="todoList"></ul>
+            </div>
+
+            <div class="card widget-notes">
+                <div class="card-header">
+                    <h3><i data-lucide="edit-3"></i> Notepad</h3>
+                </div>
+                <textarea id="notesArea" placeholder="Capture your ideas..."></textarea>
+            </div>
+
+        </section>
+    </main>
+
+    <div class="focus-overlay-controls" id="focusControls">
+        <button class="btn-control main-toggle" id="focusToggleTimerBtn">
+            <i data-lucide="play"></i>
+        </button>
+    </div>
+
+    <div class="modal-backdrop" id="linkModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Quick Link</h2>
+                <button class="icon-btn" id="closeLinkModalBtn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="setting-group">
+                    <label>Name</label>
+                    <input type="text" id="linkTitle" class="full-width" placeholder="Google">
+                </div>
+                <div class="setting-group">
+                    <label>URL</label>
+                    <input type="url" id="linkUrl" class="full-width" placeholder="https://google.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="confirmLinkBtn">Add Link</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="icon-btn" id="closeSettingsBtn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="setting-group">
+                    <label>User Name</label>
+                    <input type="text" id="userNameInput" class="full-width" placeholder="Traveler">
+                </div>
+                <div class="setting-group">
+                    <label>Background Image URL</label>
+                    <input type="url" id="backgroundImageUrl" class="full-width" placeholder="https://...">
+                </div>
+                <div class="setting-row">
+                    <div class="setting-group">
+                        <label>Focus (m)</label>
+                        <input type="number" id="focusMinutes" class="full-width">
+                    </div>
+                    <div class="setting-group">
+                        <label>Short (m)</label>
+                        <input type="number" id="shortMinutes" class="full-width">
+                    </div>
+                    <div class="setting-group">
+                        <label>Long (m)</label>
+                        <input type="number" id="longMinutes" class="full-width">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="saveSettingsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"
+        style="display: none; position: fixed; bottom: 20px; right: 20px; background: #a855f7; color: white; padding: 10px 20px; border-radius: 20px; z-index: 100;">
+        Settings Saved
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

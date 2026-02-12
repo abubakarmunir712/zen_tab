@@ -1,0 +1,10 @@
+{
+  "name": "Zen Command Center",
+  "version": "2.0",
+  "manifest_version": 3,
+  "description": "Productivity dashboard with Pomodoro, Tasks, and Quick Links.",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": ["storage"]
+}
