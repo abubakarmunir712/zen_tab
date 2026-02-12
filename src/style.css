@@ -328,8 +328,16 @@ body {
 }
 
 .sortable-ghost {
-    opacity: 0.4;
-    background: var(--primary) !important;
+    opacity: 0.5;
+    background: transparent !important;
+    border: 2px dashed var(--primary) !important;
+    border-radius: var(--radius-sm);
+    height: 100px;
+    box-sizing: border-box;
+}
+
+.sortable-ghost * {
+    visibility: hidden;
 }
 
 .link-item-wrapper {

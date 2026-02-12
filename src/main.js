@@ -63,11 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
         animation: 150,
         ghostClass: 'sortable-ghost',
         filter: '.add-link-card', // Don't allow dragging the "Add" button
+        onMove: (evt) => {
+            // Prevent dragging before the "Add" button (which is index 0)
+            return evt.related.className.indexOf('add-link-card') === -1;
+        },
         onEnd: () => {
             const newLinks = [];
             el.linksGrid.querySelectorAll('.link-item-wrapper').forEach(wrapper => {
                 const index = parseInt(wrapper.dataset.index);
-                newLinks.push(state.links[index]);
+                if (!isNaN(index)) {
+                    newLinks.push(state.links[index]);
+                }
             });
             state.links = newLinks;
             storage.set('links', state.links);
