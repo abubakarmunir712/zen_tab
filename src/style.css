@@ -290,8 +290,8 @@ body {
     overflow-x: visible;
     flex: 1;
     padding: 0.5rem;
+    scrollbar-gutter: stable;
 }
-
 
 /* Add Link Card Style */
 .add-link-card {
@@ -309,6 +309,7 @@ body {
     height: 100px;
     width: 100%;
 }
+
 
 .add-link-card:hover {
     border-color: var(--primary);
@@ -481,6 +482,7 @@ body {
     overflow-y: auto;
     flex: 1;
     padding-right: 0.5rem;
+    scrollbar-gutter: stable;
 }
 
 .todo-item {
@@ -504,6 +506,7 @@ body {
     font-size: 1rem;
     line-height: 1.6;
     outline: none;
+    scrollbar-gutter: stable;
 }
 
 /* Responsive */
