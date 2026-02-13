@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         settings: storage.get('settings', {
             bgUrl: 'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?q=80&w=2070&auto=format&fit=crop',
             userName: 'Traveler',
-            focus: 25, short: 5, long: 15
+            focus: 25, short: 5, long: 15,
+            hour24: true
         }),
         links: storage.get('links', []),
         tasks: storage.get('tasks', []),
@@ -62,7 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
         prevMonth: document.getElementById('prevMonth'),
         nextMonth: document.getElementById('nextMonth'),
         calendarTitle: document.getElementById('calendarTitle'),
-        calendarDays: document.getElementById('calendarDays')
+        calendarDays: document.getElementById('calendarDays'),
+        hour24Toggle: document.getElementById('hour24Toggle')
     };
 
     // --- Calendar ---
@@ -138,10 +140,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Clock ---
     function updateClock() {
         const now = new Date();
-        el.clock.innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const hour12 = !state.settings.hour24;
+        el.clock.innerText = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: hour12
+        });
         el.date.innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        
         const h = now.getHours();
-        const greetingText = h < 12 ? 'Good Morning' : h < 18 ? 'Good Afternoon' : 'Good Evening';
+        let greetingText;
+        if (h >= 0 && h < 5) {
+            greetingText = 'Good Night';
+        } else if (h >= 5 && h < 12) {
+            greetingText = 'Good Morning';
+        } else if (h >= 12 && h < 17) {
+            greetingText = 'Good Afternoon';
+        } else if (h >= 17 && h < 21) {
+            greetingText = 'Good Evening';
+        } else {
+            greetingText = 'Good Night';
+        }
         el.greeting.innerText = `${greetingText}, ${state.settings.userName}`;
     }
     setInterval(updateClock, 1000);
@@ -438,6 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('focusMinutes').value = state.settings.focus;
         document.getElementById('shortMinutes').value = state.settings.short;
         document.getElementById('longMinutes').value = state.settings.long;
+        el.hour24Toggle.checked = state.settings.hour24 !== false;
     };
 
     document.getElementById('closeSettingsBtn').onclick = () => el.settingsModal.classList.remove('show');
@@ -448,6 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const newFocus = parseInt(document.getElementById('focusMinutes').value);
         const newShort = parseInt(document.getElementById('shortMinutes').value);
         const newLong = parseInt(document.getElementById('longMinutes').value);
+        const newHour24 = el.hour24Toggle.checked;
 
         // Fetch latest settings to avoid overwriting other tab changes
         const currentSettings = storage.get('settings', state.settings);
@@ -457,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newFocus) currentSettings.focus = newFocus;
         if (newShort) currentSettings.short = newShort;
         if (newLong) currentSettings.long = newLong;
+        currentSettings.hour24 = newHour24;
 
         state.settings = currentSettings;
         storage.set('settings', state.settings);
